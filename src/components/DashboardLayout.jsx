@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { FiHome, FiBook, FiMap, FiBriefcase, FiCheckSquare, FiMessageSquare, FiAward, FiSettings, FiLogOut, FiSearch, FiBell, FiSun, FiMoon } from 'react-icons/fi';
 import { ThemeContext } from '../context/ThemeContext';
 import ChatBot from './ChatBot';
@@ -7,15 +8,13 @@ import ChatBot from './ChatBot';
 const DashboardLayout = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { theme, toggleTheme } = useContext(ThemeContext);
-  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user')));
   const [searchQuery, setSearchQuery] = useState('');
   const [showNotifications, setShowNotifications] = useState(false);
-  const notifications = [
+  const [notifications, setNotifications] = useState([
     { id: 1, text: "Welcome to SkillAura!", time: "Just now" },
     { id: 2, text: "Your profile is 80% complete.", time: "2h ago" },
     { id: 3, text: "New React course available.", time: "1d ago" }
-  ];
+  ]);
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -129,30 +128,52 @@ const DashboardLayout = ({ children }) => {
                 className="relative text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-white transition"
               >
                 <FiBell className="text-xl" />
-                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"></span>
+                {notifications.length > 0 && (
+                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"></span>
+                )}
               </button>
               
-              {showNotifications && (
-                <div className="absolute right-0 mt-3 w-72 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden z-50">
-                  <div className="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
-                    <h3 className="font-bold text-slate-800 dark:text-white">Notifications</h3>
-                    <span className="text-xs bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 px-2 py-1 rounded-full font-bold">
-                      {notifications.length} New
-                    </span>
-                  </div>
-                  <div className="max-h-80 overflow-y-auto">
-                    {notifications.map(notif => (
-                      <div key={notif.id} className="p-4 border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors cursor-pointer">
-                        <p className="text-sm text-slate-700 dark:text-slate-300 mb-1">{notif.text}</p>
-                        <span className="text-xs text-slate-400 dark:text-slate-500">{notif.time}</span>
+              <AnimatePresence>
+                {showNotifications && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute right-0 mt-3 w-80 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden z-50 origin-top-right"
+                  >
+                    <div className="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
+                      <h3 className="font-bold text-slate-800 dark:text-white">Notifications</h3>
+                      <span className="text-xs bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 px-2 py-1 rounded-full font-bold">
+                        {notifications.length} New
+                      </span>
+                    </div>
+                    <div className="max-h-80 overflow-y-auto">
+                      {notifications.length === 0 ? (
+                        <div className="p-6 text-center text-slate-500 dark:text-slate-400">
+                          <FiCheckSquare className="mx-auto text-3xl mb-2 opacity-50" />
+                          <p>You're all caught up!</p>
+                        </div>
+                      ) : (
+                        notifications.map(notif => (
+                          <div key={notif.id} className="p-4 border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors cursor-pointer group">
+                            <p className="text-sm text-slate-700 dark:text-slate-300 mb-1 group-hover:text-blue-600 dark:group-hover:text-cyan-400 transition-colors">{notif.text}</p>
+                            <span className="text-xs text-slate-400 dark:text-slate-500">{notif.time}</span>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                    {notifications.length > 0 && (
+                      <div 
+                        onClick={() => setNotifications([])}
+                        className="p-3 text-center bg-slate-50 dark:bg-slate-800/50 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors cursor-pointer text-sm font-medium text-blue-600 dark:text-blue-400"
+                      >
+                        Mark all as read
                       </div>
-                    ))}
-                  </div>
-                  <div className="p-3 text-center bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer text-sm font-medium text-blue-600 dark:text-blue-400">
-                    Mark all as read
-                  </div>
-                </div>
-              )}
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
             <div 
               className="flex items-center space-x-3 cursor-pointer"
