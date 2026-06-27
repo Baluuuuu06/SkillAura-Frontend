@@ -10,6 +10,12 @@ const DashboardLayout = ({ children }) => {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user')));
   const [searchQuery, setSearchQuery] = useState('');
+  const [showNotifications, setShowNotifications] = useState(false);
+  const notifications = [
+    { id: 1, text: "Welcome to SkillAura!", time: "Just now" },
+    { id: 2, text: "Your profile is 80% complete.", time: "2h ago" },
+    { id: 3, text: "New React course available.", time: "1d ago" }
+  ];
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -117,10 +123,37 @@ const DashboardLayout = ({ children }) => {
             >
               {theme === 'dark' ? <FiSun className="text-xl" /> : <FiMoon className="text-xl" />}
             </button>
-            <button className="relative text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-white transition">
-              <FiBell className="text-xl" />
-              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"></span>
-            </button>
+            <div className="relative">
+              <button 
+                onClick={() => setShowNotifications(!showNotifications)}
+                className="relative text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-white transition"
+              >
+                <FiBell className="text-xl" />
+                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"></span>
+              </button>
+              
+              {showNotifications && (
+                <div className="absolute right-0 mt-3 w-72 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden z-50">
+                  <div className="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
+                    <h3 className="font-bold text-slate-800 dark:text-white">Notifications</h3>
+                    <span className="text-xs bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 px-2 py-1 rounded-full font-bold">
+                      {notifications.length} New
+                    </span>
+                  </div>
+                  <div className="max-h-80 overflow-y-auto">
+                    {notifications.map(notif => (
+                      <div key={notif.id} className="p-4 border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors cursor-pointer">
+                        <p className="text-sm text-slate-700 dark:text-slate-300 mb-1">{notif.text}</p>
+                        <span className="text-xs text-slate-400 dark:text-slate-500">{notif.time}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="p-3 text-center bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer text-sm font-medium text-blue-600 dark:text-blue-400">
+                    Mark all as read
+                  </div>
+                </div>
+              )}
+            </div>
             <div 
               className="flex items-center space-x-3 cursor-pointer"
               onClick={() => navigate('/settings')}
