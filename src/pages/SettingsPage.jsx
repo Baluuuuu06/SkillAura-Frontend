@@ -10,8 +10,6 @@ const SettingsPage = () => {
   });
   const [message, setMessage] = useState({ text: '', type: '' });
   const [loading, setLoading] = useState(false);
-  const [showOtp, setShowOtp] = useState(false);
-  const [otp, setOtp] = useState('');
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -51,27 +49,10 @@ const SettingsPage = () => {
     setMessage({ text: '', type: '' });
 
     try {
-      // If user is trying to change password, require OTP first
-      if (formData.newPassword && !showOtp) {
-        if (!formData.currentPassword) {
-          setMessage({ text: 'Current password is required to set a new password.', type: 'error' });
-          setLoading(false);
-          return;
-        }
-        await api.post('/auth/send-otp', { email: formData.email });
-        setShowOtp(true);
-        setMessage({ text: 'OTP sent to your email to verify password change.', type: 'success' });
+      if (formData.newPassword && !formData.currentPassword) {
+        setMessage({ text: 'Current password is required to set a new password.', type: 'error' });
         setLoading(false);
         return;
-      }
-
-      if (showOtp) {
-        if (!otp) {
-          setMessage({ text: 'Please enter the verification code.', type: 'error' });
-          setLoading(false);
-          return;
-        }
-        await api.post('/auth/verify-otp', { email: formData.email, otp });
       }
 
       const response = await api.put('/auth/profile', formData);
@@ -91,8 +72,6 @@ const SettingsPage = () => {
       }));
       
       setFormData(prev => ({ ...prev, currentPassword: '', newPassword: '' }));
-      setShowOtp(false);
-      setOtp('');
       
       // Dispatch event so layout updates immediately
       window.dispatchEvent(new Event('storage'));
@@ -265,38 +244,6 @@ const SettingsPage = () => {
                 />
               </div>
             </div>
-            
-            {showOtp && (
-              <motion.div 
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                className="mt-6 p-6 rounded-2xl border border-cyan-500/30 bg-cyan-500/5"
-              >
-                <div className="mb-4 text-center">
-                  <p className="text-slate-700 dark:text-slate-300 text-sm">We've sent a 6-digit code to</p>
-                  <p className="text-cyan-600 dark:text-cyan-400 font-bold">{formData.email}</p>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">Verification Code</label>
-                  <input 
-                    type="text" 
-                    required
-                    maxLength="6"
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-900/80 border border-cyan-500/50 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all text-center tracking-[0.5em] font-mono text-xl"
-                    placeholder="000000"
-                  />
-                </div>
-                <button 
-                  type="button"
-                  onClick={() => setShowOtp(false)}
-                  className="mt-4 w-full py-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white transition-colors text-sm"
-                >
-                  Cancel Password Change
-                </button>
-              </motion.div>
-            )}
           </div>
 
           <div className="flex justify-end pt-4">
