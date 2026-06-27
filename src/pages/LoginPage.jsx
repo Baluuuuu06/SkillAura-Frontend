@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { ThemeContext } from '../context/ThemeContext';
+import { FiSun, FiMoon } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 import api from '../services/api';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useContext(ThemeContext);
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -28,6 +31,13 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4 relative overflow-hidden transition-colors duration-300">
+      
+      <button 
+        onClick={toggleTheme} 
+        className="absolute top-6 right-6 p-3 rounded-xl bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700 shadow-md z-50"
+      >
+        {theme === 'dark' ? <FiSun className="text-xl" /> : <FiMoon className="text-xl" />}
+      </button>
       <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl -z-10"></div>
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl -z-10"></div>
 

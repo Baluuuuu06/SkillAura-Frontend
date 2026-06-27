@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { ThemeContext } from '../context/ThemeContext';
+import { FiSun, FiMoon } from 'react-icons/fi';
 
 const LandingPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { theme, toggleTheme } = useContext(ThemeContext);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -13,7 +16,7 @@ const LandingPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white overflow-hidden relative">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white overflow-hidden relative transition-colors duration-300">
       {/* Animated Background Shapes */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
         <motion.div 
@@ -38,22 +41,28 @@ const LandingPage = () => {
             </span>
           </div>
           <div className="flex flex-col">
-            <h1 className="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-300 tracking-tight leading-tight">
+            <h1 className="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-cyan-500 dark:from-blue-400 dark:to-cyan-300 tracking-tight leading-tight">
               SkillAura
             </h1>
-            <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-widest leading-none">
+            <span className="text-[9px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest leading-none">
               1% better than yesterday
             </span>
           </div>
         </Link>
-        <div className="space-x-4">
+        <div className="flex items-center space-x-4">
+          <button 
+            onClick={toggleTheme} 
+            className="p-2 rounded-xl bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700 shadow-sm"
+          >
+            {theme === 'dark' ? <FiSun className="text-lg" /> : <FiMoon className="text-lg" />}
+          </button>
           {isLoggedIn ? (
             <Link to="/dashboard" className="px-6 py-2 bg-blue-600 hover:bg-blue-500 rounded-full font-semibold transition shadow-lg shadow-blue-500/30 text-white">
               Go to Dashboard
             </Link>
           ) : (
             <>
-              <Link to="/login" className="px-4 py-2 text-blue-300 hover:text-white transition">Login</Link>
+              <Link to="/login" className="px-4 py-2 text-blue-600 dark:text-blue-300 hover:text-blue-800 dark:hover:text-white font-medium transition">Login</Link>
               <Link to="/register" className="px-6 py-2 bg-blue-600 hover:bg-blue-500 rounded-full font-semibold transition shadow-lg shadow-blue-500/30 text-white">
                 Get Started
               </Link>
@@ -70,7 +79,7 @@ const LandingPage = () => {
           className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6"
         >
           Master Skills with <br/> 
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500 dark:from-cyan-400 dark:to-blue-600">
             Personalized Roadmaps
           </span>
         </motion.h2>
@@ -79,7 +88,7 @@ const LandingPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-lg md:text-xl text-slate-400 max-w-2xl mb-10"
+          className="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mb-10"
         >
           Join thousands of learners building their careers through interactive projects, quizzes, and AI-guided mentorship.
         </motion.p>
