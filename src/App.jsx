@@ -19,8 +19,8 @@ const AnimatedRoutes = () => {
   const location = useLocation();
   
   return (
-    <AnimatePresence mode="wait">
-      <Suspense fallback={<div className="h-screen w-full flex items-center justify-center bg-slate-900 text-white"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div></div>}>
+    <Suspense fallback={<div className="h-screen w-full flex items-center justify-center bg-slate-900 text-white"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div></div>}>
+      <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<PageTransition><LandingPage /></PageTransition>} />
           <Route path="/login" element={<PageTransition><LoginPage /></PageTransition>} />
@@ -33,8 +33,8 @@ const AnimatedRoutes = () => {
           <Route path="/quiz/:skillName" element={<DashboardLayout><PageTransition><QuizPage /></PageTransition></DashboardLayout>} />
           <Route path="/settings" element={<DashboardLayout><PageTransition><SettingsPage /></PageTransition></DashboardLayout>} />
         </Routes>
-      </Suspense>
-    </AnimatePresence>
+      </AnimatePresence>
+    </Suspense>
   );
 };
 
