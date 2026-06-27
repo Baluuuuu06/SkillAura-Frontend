@@ -14,7 +14,6 @@ const RoadmapPage = lazy(() => import('./pages/RoadmapPage'));
 const ProjectsPage = lazy(() => import('./pages/ProjectsPage'));
 const QuizPage = lazy(() => import('./pages/QuizPage'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage'));
-import { ThemeProvider } from './context/ThemeContext';
 
 const AnimatedRoutes = () => {
   const location = useLocation();
