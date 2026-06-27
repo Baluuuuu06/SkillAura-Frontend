@@ -8,6 +8,8 @@ import ChatBot from './ChatBot';
 const DashboardLayout = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useContext(ThemeContext);
+  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user')));
   const [searchQuery, setSearchQuery] = useState('');
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState([
